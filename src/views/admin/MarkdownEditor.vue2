@@ -1,0 +1,67 @@
+<template>
+  <div class="markdown-editor">
+    <!-- Markdown 编辑器 -->
+    <div id="vditor"></div>
+
+    <!-- 保存按钮 -->
+    <el-button type="primary" @click="saveContent" style="margin-top: 20px;">
+      保存
+    </el-button>
+
+    <!-- 预览 -->
+    <div v-if="previewContent" class="preview">
+      <h3>预览</h3>
+      <div v-html="previewContent"></div>
+    </div>
+  </div>
+</template>
+
+<script>
+import Vditor from 'vditor';
+import 'vditor/dist/index.css'; // 引入 Vditor 样式
+import { ElMessage } from 'element-plus';
+
+export default {
+  data() {
+    return {
+      vditor: null, // Vditor 实例
+      previewContent: '', // 预览内容
+    };
+  },
+  mounted() {
+    // 初始化 Vditor
+    this.vditor = new Vditor('vditor', {
+      height: 500, // 编辑器高度
+      placeholder: '开始写作吧...', // 占位符
+      mode: 'wysiwyg', // 默认模式：wysiwyg（所见即所得）、ir（即时渲染）、sv（分屏预览）
+      preview: {
+        // 预览配置
+        mode: 'editor', // 预览模式
+        actions: [], // 隐藏预览工具栏
+      },
+      after: () => {
+        // 编辑器初始化完成后的回调
+        console.log('Vditor 初始化完成');
+      },
+    });
+  },
+  methods: {
+    saveContent() {
+      // 获取编辑器内容
+      const content = this.vditor.getValue();
+      this.previewContent = this.vditor.getHTML(); // 获取 HTML 格式内容
+      ElMessage.success('内容已保存！');
+      console.log('保存的内容：', content);
+    },
+  },
+};
+</script>
+
+<style  scoped>
+
+#vditor > div.vditor-content > div.vditor-wysiwyg > pre {
+  padding: 0 !important; /* 去掉 padding */
+  background-color: #f9f9f9; /* 可选：设置背景色 */
+  border-radius: 4px; /* 可选：设置圆角 */
+}
+</style>

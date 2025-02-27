@@ -1,0 +1,40 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+# 忽略构建输出
+/dist
+
+# 忽略依赖包
+/node_modules
+
+# 忽略 IDE 配置
+/.idea
+/.vscode
+
+# 忽略 Yarn 缓存（可选，根据需求保留 yarn.lock）
+/.yarn
+
+# 忽略常见的临时文件或日志（视情况添加）
+*.log
+.DS_Store
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

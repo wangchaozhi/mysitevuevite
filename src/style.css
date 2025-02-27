@@ -1,0 +1,34 @@
+/* style.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+
+h1 {
+    font-size: 2rem;
+    color: #333;
+}
+
+.el-menu {
+    background-color: #fff;
+    width: 100%;
+}
+
+ .el-header {
+     padding: 0 !important;  /* Remove padding completely */
+ }
+
+
+
+.el-menu-item {
+    font-size: 1.2rem;
+}
+/* src/assets/styles.css */
+#vditor > div.vditor-content > div.vditor-wysiwyg > pre {
+    padding: 0 !important; /* 去掉 padding */
+    background-color: #f9f9f9; /* 可选：设置背景色 */
+    border-radius: 4px; /* 可选：设置圆角 */
+}
