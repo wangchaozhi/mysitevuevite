@@ -2,11 +2,13 @@
 <template>
   <div class="centered-content">
     <div ref="editorRef"></div>
+    <button @click="submitRichText">提交</button>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import api from '@/utils/api'; // 引入封装好的 api.js
 import '@toast-ui/editor/dist/toastui-editor.css'; // 保持样式静态导入
 
 // 定义编辑器实例和内容
@@ -34,6 +36,42 @@ onMounted(async () => {
     ],
   });
 });
+
+// 提交富文本内容
+const submitRichText = async () => {
+  try {
+    if (!editorInstance) {
+      console.error('编辑器尚未初始化');
+      return;
+    }
+
+    // 获取编辑器内容
+    const markdownContent = editorInstance.getMarkdown(); // Markdown 格式
+    const htmlContent = editorInstance.getHTML(); // HTML 格式
+    console.log('markdownContent:', markdownContent);
+    console.log('htmlContent:', htmlContent);
+
+    // 构造请求数据
+    const richTextData = {
+      content: htmlContent, // 或者使用 markdownContent，取决于后端需求
+      // 可以添加其他字段
+      // title: '文章标题',
+      // author: '作者名',
+    };
+
+    // 发送 POST 请求
+    const response = await api.post('/personalWebsite/richText', richTextData);
+
+    // 处理响应
+    console.log('提交成功:', response);
+    alert('富文本内容提交成功！');
+
+  } catch (error) {
+    console.error('提交失败:', error);
+    alert('提交失败，请稍后重试');
+  }
+};
+
 
 // 清理编辑器实例
 onBeforeUnmount(() => {

@@ -3,31 +3,41 @@
     <el-header> <!-- 设置 el-menu 为横向菜单 -->
       <el-menu mode="horizontal" :default-active="$route.path">
         <!-- 使用 el-icon 图标 -->
-        <el-menu-item @click="navigateTo('/')">
+        <el-menu-item  index="1" @click="navigateTo('/')">
           <i class="el-icon-house"></i>首页
         </el-menu-item>
-        <el-menu-item @click="navigateTo('/about')">
+        <el-menu-item index="2"  @click="navigateTo('/about')">
           <i class="el-icon-info"></i>关于我
         </el-menu-item>
-        <el-menu-item @click="navigateTo('/portfolio')">
+        <el-menu-item index="3"  @click="navigateTo('/portfolio')">
           <i class="el-icon-s-grid"></i>作品集
         </el-menu-item>
-        <el-menu-item @click="navigateTo('/blog')">
+        <el-menu-item index="" @click="navigateTo('/blog')">
           <i class="el-icon-edit"></i>博客
         </el-menu-item>
+        <el-menu-item index="5"  @click="navigateTo('/admin/login')">
+          <i class="el-icon-edit"></i>登录
+        </el-menu-item>
+      <el-menu-item index="6"  @click="goTo('http://vue3.wangchaozhi.cn')">
+        <i class="right-align"></i>后台管理页面
+      </el-menu-item>
       </el-menu>
     </el-header>
-
     <el-main>
-      <!-- 路由页面切换过渡效果 -->
-      <transition name="fade" mode="out-in">
-        <router-view></router-view>
-      </transition>
+      <router-view v-slot="{ Component }">
+        <transition name="fade" mode="out-in">
+          <component :is="Component" />
+        </transition>
+      </router-view>
     </el-main>
 
 
-
-
+<!--    <el-main>-->
+<!--      &lt;!&ndash; 路由页面切换过渡效果 &ndash;&gt;-->
+<!--      <transition name="fade" mode="out-in">-->
+<!--        <router-view></router-view>-->
+<!--      </transition>-->
+<!--    </el-main>-->
     <!-- Footer -->
     <el-footer>
       <div class="footer-content">
@@ -46,11 +56,15 @@ export default {
     navigateTo(path) {
       this.$router.push(path); // 使用 Vue Router 的 push 方法进行路由跳转
     },
+    goTo(url) {
+      window.location.href = url;
+    }
   }
 };
 </script>
 
 <style scoped>
+
 
 .el-menu {
   width: 100%;

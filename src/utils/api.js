@@ -1,4 +1,6 @@
 import axios from 'axios';
+import {ElMessage} from "element-plus";
+import router from "@/router/index.js";
 
 
 // 可以根据环境变量或打包环境动态设置 baseURL
@@ -6,6 +8,7 @@ const getBaseURL = () => {
     // 开发环境
     if (process.env.NODE_ENV === 'development') {
         return 'http://localhost:8091/winxin';
+        // return 'https://winxin.wangchaozhi.cn/winxin';
     }
     // 生产环境
     if (process.env.NODE_ENV === 'production') {
@@ -45,33 +48,66 @@ instance.interceptors.request.use(
         return Promise.reject(error);
     }
 );
+//
+// // 响应拦截器
+// instance.interceptors.response.use(
+//     (response) => {
+//         // 对响应数据做些什么
+//         return response.data;
+//     },
+//     (error) => {
+//         // 对响应错误做些什么
+//         if (error.response) {
+//             switch (error.response.status) {
+//                 case 401:
+//                     console.error('未授权，请重新登录');
+//                     break;
+//                 case 404:
+//                     console.error('资源未找到');
+//                     break;
+//                 case 500:
+//                     console.error('服务器错误');
+//                     break;
+//                 default:
+//                     console.error('请求失败', error.response.status);
+//             }
+//         }
+//         return Promise.reject(error);
+//     }
+// );
 
-// 响应拦截器
+// Response interceptor
 instance.interceptors.response.use(
     (response) => {
-        // 对响应数据做些什么
+        switch (response.data.code) {
+            case 200:
+                return response.data;
+            case 401:
+                ElMessage.error('未授权，请重新登录');
+                router.push('/admin/login');
+                break;
+            case 404:
+                ElMessage.error('资源未找到');
+                break;
+            case 500:
+                ElMessage.error('服务器错误');
+                break;
+            default:
+                ElMessage.error(response.data.msg || '请求失败');
+        }
         return response.data;
     },
     (error) => {
-        // 对响应错误做些什么
+        ElMessage.error('网络错误，请稍后重试');
         if (error.response) {
-            switch (error.response.status) {
-                case 401:
-                    console.error('未授权，请重新登录');
-                    break;
-                case 404:
-                    console.error('资源未找到');
-                    break;
-                case 500:
-                    console.error('服务器错误');
-                    break;
-                default:
-                    console.error('请求失败', error.response.status);
-            }
+            console.error(`HTTP 错误: ${error.response.status}`, error.response.data?.msg || 'Unknown error');
+        } else {
+            console.error('网络错误:', error.message);
         }
         return Promise.reject(error);
     }
 );
+
 
 /**
  * RESTful 风格的请求方法封装

@@ -42,8 +42,20 @@ export default {
     };
   },
   created() {
+    // // 保存 token 到本地存储
+    // const item = localStorage.getItem('token');
+    // if(item){
+    //   // 跳转到首页或其他页面
+    //   this.$router.push('/markDown');
+    // }else {
+    //
+    // // 页面加载时，检查是否保存了用户名和密码
+    // this.loadSavedCredentials();
+    // }
+
     // 页面加载时，检查是否保存了用户名和密码
     this.loadSavedCredentials();
+
   },
   methods: {
     submitForm(formName) {
@@ -73,6 +85,7 @@ export default {
 
           // 保存 token 到本地存储
           localStorage.setItem('token', response.data.token);
+          // localStorage.setItem('token', "eyJhbGciOiJIUzUxMiIsInppcCI6IkdaSVAifQ.H4sIAAAAAAAAADWLQQqEMAwA_5KzhURNt_qb1KZYQSi0wi6Lf9942NsMw3zh6AVW2DYmDGl2WabkZgreCaM6VXzhFBfJMcMARTqsxIG9Z888QLui3e3Tup5Pb81013KKmVzJTGo11nf9n8v4nMUaEY73DzTabjmDAAAA.4SuqQ42IGqCgBai6qd4RaVpVxTlZIWC826QA9kLvt9d-yVUw82gU47HDaSfOzgAcloZedYNNpUcd18Ne8vvjQA");
 
           // 如果用户选择了“记住密码”，则保存用户名和密码
           if (this.loginForm.rememberMe) {
