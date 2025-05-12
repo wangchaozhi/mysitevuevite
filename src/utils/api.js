@@ -79,7 +79,6 @@ instance.interceptors.request.use(
 // Response interceptor
 instance.interceptors.response.use(
     (response) => {
-        console.log(response.data);
         switch (response.data.code) {
             case 200:
                 return response.data;

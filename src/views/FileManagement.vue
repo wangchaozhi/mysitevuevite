@@ -60,11 +60,34 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 下载进度条对话框 -->
+    <el-dialog
+        v-model="downloadDialogVisible"
+        title="正在下载"
+        width="30%"
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        :show-close="false"
+    >
+      <el-progress :percentage="downloadProgress" status="success" />
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button
+              type="primary"
+              size="small"
+              :disabled="downloadProgress < 100"
+              @click="downloadDialogVisible = false"
+          >
+            关闭
+          </el-button>
+        </span>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {onMounted, ref} from 'vue';
 import {ElMessage, ElMessageBox} from 'element-plus';
 import api from '@/utils/api';
 
@@ -72,6 +95,11 @@ import api from '@/utils/api';
 const fileList = ref([]);
 // 上传文件列表（用于 el-upload 组件）
 const uploadFileList = ref([]);
+
+// 下载进度条相关
+const downloadDialogVisible = ref(false);
+const downloadProgress = ref(0);
+
 
 // 获取文件列表
 const fetchFileList = async () => {
@@ -101,20 +129,37 @@ const formatFileSize = (size) => {
   }
   return `${value.toFixed(2)} ${units[unitIndex]}`;
 };
-
 // 处理文件下载
 const handleDownload = async (file) => {
   try {
-    console.log(file)
-    // 假设下载接口需要文件路径作为参数
+    if (!file.id) {
+      ElMessage.error('文件ID无效');
+      return;
+    }
+
+    // 重置并显示进度条
+    downloadProgress.value = 0;
+    downloadDialogVisible.value = true;
+
+    // 发送下载请求
     const response = await api.get('/weChat/getFile/' + file.id, {},{
-      responseType: 'blob'});
+      responseType: 'blob',
+      timeout: 0, // 永不超时
+      onDownloadProgress: (progressEvent) => {
+        // 计算下载进度
+        if (progressEvent.total) {
+          downloadProgress.value = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+        }
+      }
+    });
+
     // 判断是否是 JSON 错误
     const contentType = response.type;
     if (contentType === 'application/json') {
       // 将 blob 读取为文本
       const text = await response.text();
       const json = JSON.parse(text);
+      downloadDialogVisible.value = false;
       ElMessage.error(json.msg || '下载失败');
       return;
     }
@@ -123,17 +168,53 @@ const handleDownload = async (file) => {
     const url = window.URL.createObjectURL(new Blob([response]));
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', file.path.split('\\').pop()); // 使用文件名
+    link.setAttribute('download', file.path.split('\\').pop());
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
     window.URL.revokeObjectURL(url);
+
+    // 下载完成，关闭对话框
+    downloadDialogVisible.value = false;
     ElMessage.success('下载已开始');
   } catch (error) {
     console.error('Error downloading file:', error.message, error.response);
+    downloadDialogVisible.value = false;
     ElMessage.error('下载文件失败');
   }
 };
+// // 处理文件下载
+// const handleDownload = async (file) => {
+//   try {
+//     console.log(file)
+//     // 假设下载接口需要文件路径作为参数
+//     const response = await api.get('/weChat/getFile/' + file.id, {},{
+//       responseType: 'blob'});
+//     // 判断是否是 JSON 错误
+//     const contentType = response.type;
+//     if (contentType === 'application/json') {
+//       // 将 blob 读取为文本
+//       const text = await response.text();
+//       const json = JSON.parse(text);
+//       ElMessage.error(json.msg || '下载失败');
+//       return;
+//     }
+//
+//     // 创建下载链接
+//     const url = window.URL.createObjectURL(new Blob([response]));
+//     const link = document.createElement('a');
+//     link.href = url;
+//     link.setAttribute('download', file.path.split('\\').pop()); // 使用文件名
+//     document.body.appendChild(link);
+//     link.click();
+//     document.body.removeChild(link);
+//     window.URL.revokeObjectURL(url);
+//     ElMessage.success('下载已开始');
+//   } catch (error) {
+//     console.error('Error downloading file:', error.message, error.response);
+//     ElMessage.error('下载文件失败');
+//   }
+// };
 
 // 上传前校验
 const beforeUpload = (file) => {
