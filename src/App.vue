@@ -3,21 +3,25 @@
     <el-header> <!-- 设置 el-menu 为横向菜单 -->
       <el-menu mode="horizontal" :default-active="$route.path">
         <!-- 使用 el-icon 图标 -->
-        <el-menu-item  index="1" @click="navigateTo('/')">
+        <el-menu-item  index="/" @click="navigateTo('/')">
           <i class="el-icon-house"></i>首页
         </el-menu-item>
-        <el-menu-item index="2"  @click="navigateTo('/about')">
+        <el-menu-item index="about"  @click="navigateTo('/about')">
           <i class="el-icon-info"></i>关于我
         </el-menu-item>
-        <el-menu-item index="3"  @click="navigateTo('/portfolio')">
+        <el-menu-item index="portfolio"  @click="navigateTo('/portfolio')">
           <i class="el-icon-s-grid"></i>作品集
         </el-menu-item>
-        <el-menu-item index="" @click="navigateTo('/blog')">
+        <el-menu-item index="blog" @click="navigateTo('/blog')">
           <i class="el-icon-edit"></i>博客
         </el-menu-item>
-        <el-menu-item index="5"  @click="navigateTo('/admin/login')">
-          <i class="el-icon-edit"></i>登录
+
+        <el-menu-item index="fileManagement" @click="navigateTo('/fileManagement')">
+          <i class="el-icon-edit"></i>文件管理
         </el-menu-item>
+<!--        <el-menu-item index="5"  @click="navigateTo('/admin/login')">-->
+<!--          <i class="el-icon-edit"></i>登录-->
+<!--        </el-menu-item>-->
       <el-menu-item index="6"  @click="goTo('http://vue3.wangchaozhi.cn')">
         <i class="right-align"></i>后台管理页面
       </el-menu-item>

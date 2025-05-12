@@ -1,24 +1,28 @@
 <template>
-  <div class="blog-container">
-    <div class="blog-list">
-      <el-card
-          v-for="blog in blogList"
-          :key="blog.id"
-          class="blog-card"
-      >
-        <template #header>
-          Blog Post #{{ blog.id }}
-        </template>
-        <div class="blog-content" v-html="blog.content"></div>
-        <p class="create-time">Posted on: {{ blog.createTime }}</p>
-      </el-card>
+  <div class="blog-page-wrapper">
+    <el-button type="success" @click="router.push('/markDown'); ">富文本</el-button>
+    <div class="blog-container">
+      <div class="blog-list">
+        <el-card
+            v-for="blog in blogList"
+            :key="blog.id"
+            class="blog-card"
+        >
+          <template #header>
+            Blog Post #{{ blog.id }}
+          </template>
+          <div class="blog-content" v-html="blog.content"></div>
+          <p class="create-time">Posted on: {{ blog.createTime }}</p>
+        </el-card>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted} from 'vue';
 import api from '@/utils/api';
+import router from "@/router/index.js";
 
 // 存储博客列表数据
 const blogList = ref([]);
@@ -29,7 +33,6 @@ const fetchBlogList = async () => {
     const response = await api.post('/personalWebsite/blogList', {});
     if (response.code === 200) {
       blogList.value = response.data;
-      console.log(response.data);
     } else {
       console.error('Failed to fetch blog list:', response.msg || 'Unknown error');
     }
@@ -60,8 +63,9 @@ onMounted(() => {
   margin: 0 auto; /* Center the flex container */
 
 }
+
 .blog-card {
-  width:25rem;
+  width: 25rem;
   height: 20rem;
   max-width: 30rem;
   max-height: 20rem;

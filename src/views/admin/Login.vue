@@ -21,7 +21,7 @@
 
 <script>
 import { ElMessage } from 'element-plus'; // 引入 ElMessage
-import api from '@/utils/api'; // 引入封装好的 api.js
+import api from '@/utils/api';
 
 export default {
   data() {
@@ -97,8 +97,16 @@ export default {
             localStorage.removeItem('rememberedPassword');
           }
 
-          // 跳转到首页或其他页面
-          this.$router.push('/markDown');
+          const redirectTo = localStorage.getItem('currentRoute');
+          if (redirectTo) {
+            this.$router.push(redirectTo); // 跳转到之前的路由
+            localStorage.removeItem('currentRoute'); // 登录后清除记录的路由
+          } else {
+            this.$router.push('/markDown');
+          }
+
+          // // 跳转到首页或其他页面
+          // this.$router.push('/markDown');
         } else {
           ElMessage.error(response.msg); // 使用 ElMessage.error
         }

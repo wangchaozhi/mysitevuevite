@@ -79,11 +79,14 @@ instance.interceptors.request.use(
 // Response interceptor
 instance.interceptors.response.use(
     (response) => {
+        console.log(response.data);
         switch (response.data.code) {
             case 200:
                 return response.data;
             case 401:
                 ElMessage.error('未授权，请重新登录');
+                // 保存当前路由的路径
+                localStorage.setItem('currentRoute', router.currentRoute.value.fullPath);
                 router.push('/admin/login');
                 break;
             case 404:
@@ -93,7 +96,7 @@ instance.interceptors.response.use(
                 ElMessage.error('服务器错误');
                 break;
             default:
-                ElMessage.error(response.data.msg || '请求失败');
+                // ElMessage.error(response.data.msg || '请求失败');
         }
         return response.data;
     },
@@ -117,20 +120,26 @@ const api = {
      * GET 请求
      * @param {string} url - 请求地址
      * @param {object} params - 请求参数
+     * @param config
      * @returns {Promise}
      */
-    get(url, params = {}) {
-        return instance.get(url, { params });
+    get(url, params = {}, config = {}) {
+        return instance.get(url, {
+            ...config,
+            params, // 确保 params 仍然生效
+        });
     },
+
 
     /**
      * POST 请求
      * @param {string} url - 请求地址
      * @param {object} data - 请求体数据
+     * @param config
      * @returns {Promise}
      */
-    post(url, data = {}) {
-        return instance.post(url, data);
+    post(url, data = {}, config = {}) {
+        return instance.post(url, data, config); // 添加 config 参数
     },
 
     /**
